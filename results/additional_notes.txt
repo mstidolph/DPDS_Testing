@@ -1,0 +1,75 @@
+-------------------------------------------
+Additional Notes on Testing and Alterations
+-------------------------------------------
+
+
+-------------
+General Notes
+-------------
+
+- Changing Tracker Version:
+
+	- Both original and updated code can be used to track provenance.
+	- To switch between versions, change the location the tracker is loaded from:
+		- Original: prov_acquisition.prov_libraries.provenance_tracker_original
+		- Updated: prov_acquisition.prov_libraries.provenance_tracker
+
+- Memory Issues:
+	
+	- After some larger tests on Census data, tool may return error and be unable to delete existing data. 
+	- In this situation, delete and recompose Docker image. 
+
+- Tracking Single DataFrame: 
+
+	- Tool returns error when attempting to track only one DataFrame.
+	- Blank DataFrame is created and tracked for all tests to avoid this error.
+	- For operations including more than one DataFrame, blank version is replaced. 
+
+
+-------
+Testing
+-------
+
+- Rename Row and Change Index:
+	
+	- Tests with updated tracker will produce error due to alterations made.
+	- No error if using original code.
+
+- Imputation:
+	
+	- Some versions of imputation incompatible with tool and are not executed. 
+	- Same code executes correctly when not tracked.
+	- Only three types execute correctly when tracked: set value, forward fill, backward fill.
+
+- Drop Duplicates:
+
+	- With original tool, drop duplicates is same as drop instances and depends on position.
+	- As duplicates in test are added to end of data they are not detected with original code.
+	- Operation is detected as drop instance with updated tool.
+
+- Transpose: 
+	
+	- Unsupported by tracker, fails to execute and locks tracker into repetition.
+	- Returns repeating messages which wont stop until process is killed.
+
+- Group and Aggregate: 
+	
+	- Operation unsupported and executes incorrectly for all aggregate functions.
+	- Code which executes correctly outside of tracker returns results of shape (1, 1) when tracked. 
+
+
+-----------
+Alterations
+-----------
+
+- One-Hot Encoding:
+	
+	- Updated tracker includes code to identify which feature was encoded. 
+	- Currently commented due to incompatibility with larger datasets. 
+	- In current format tool identifies One-Hot Encoding but doesn't link to existing feature. 
+
+
+
+
+
+
